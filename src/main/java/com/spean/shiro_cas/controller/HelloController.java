@@ -11,8 +11,4 @@ public class HelloController {
 		return "hello now:"+System.currentTimeMillis();
 	}
 	
-	@RequestMapping("callback")
-	public Object callback() {
-		return "callback now:"+System.currentTimeMillis();
-	}
 }

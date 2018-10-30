@@ -97,6 +97,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/", "securityFilter");
         filterChainDefinitionMap.put("/application/**", "securityFilter");
         filterChainDefinitionMap.put("/index", "securityFilter");
+        filterChainDefinitionMap.put("/hello", "securityFilter");
         filterChainDefinitionMap.put("/callback", "callbackFilter");
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/**","anon");
