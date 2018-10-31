@@ -15,8 +15,12 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.pac4j.core.profile.CommonProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CasRealm extends Pac4jRealm {
+	
+	Logger logger = LoggerFactory.getLogger(CasRealm.class);
 
 	private String clientName;
 
@@ -42,7 +46,7 @@ public class CasRealm extends Pac4jRealm {
 		final Pac4jToken pac4jToken = (Pac4jToken) authenticationToken;
 		final List<CommonProfile> commonProfileList = pac4jToken.getProfiles();
 		final CommonProfile commonProfile = commonProfileList.get(0);
-		System.out.println("单点登录返回的信息" + commonProfile.toString());
+		logger.info("单点登录返回的信息" + commonProfile.toString());
 		// todo
 		final Pac4jPrincipal principal = new Pac4jPrincipal(commonProfileList,
 				getPrincipalNameAttribute());

@@ -1,11 +1,11 @@
 package com.spean.shiro_cas.config.shiro;
 
-import io.buji.pac4j.context.ShiroSessionStore;
-
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.cas.logout.DefaultCasLogoutHandler;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.WebContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,7 @@ public class Pac4jConfig {
      * @return
      */
     @Bean("authcConfig")
-    public Config config(CasClient casClient, ShiroSessionStore shiroSessionStore) {
+    public Config config(CasClient casClient, CustomShiroSessionStore shiroSessionStore) {
         Config config = new Config(casClient);
         config.setSessionStore(shiroSessionStore);
         return config;
@@ -42,8 +42,8 @@ public class Pac4jConfig {
      * @return
      */
     @Bean
-    public ShiroSessionStore shiroSessionStore(){
-        return new ShiroSessionStore();
+    public CustomShiroSessionStore shiroSessionStore(){
+        return CustomShiroSessionStore.INSTANCE;
     }
 
     /**
@@ -73,6 +73,7 @@ public class Pac4jConfig {
         configuration.setProtocol(CasProtocol.CAS20);
         configuration.setAcceptAnyProxy(true);
         configuration.setPrefixUrl(casServerUrl + "/");
+        configuration.setLogoutHandler(new DefaultCasLogoutHandler<WebContext>());
         return configuration;
     }
 

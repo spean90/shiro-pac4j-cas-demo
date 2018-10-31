@@ -76,8 +76,8 @@ public class ShiroConfig {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
+    public FilterRegistrationBean<DelegatingFilterProxy> filterRegistrationBean() {
+        FilterRegistrationBean<DelegatingFilterProxy> filterRegistration = new FilterRegistrationBean<DelegatingFilterProxy>();
         filterRegistration.setFilter(new DelegatingFilterProxy("shiroFilter"));
         //  该值缺省为false,表示生命周期由SpringApplicationContext管理,设置为true则表示由ServletContainer管理
         filterRegistration.addInitParameter("targetFilterLifecycle", "true");
@@ -98,6 +98,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/application/**", "securityFilter");
         filterChainDefinitionMap.put("/index", "securityFilter");
         filterChainDefinitionMap.put("/hello", "securityFilter");
+        filterChainDefinitionMap.put("/userInfo", "customCasFilter");
         filterChainDefinitionMap.put("/callback", "callbackFilter");
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/**","anon");
@@ -120,12 +121,17 @@ public class ShiroConfig {
         //shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         // 添加casFilter到shiroFilter中
         loadShiroFilterChain(shiroFilterFactoryBean);
-        Map<String, Filter> filters = new HashMap<>(3);
+        Map<String, Filter> filters = new HashMap<>(4);
         //cas 资源认证拦截器
         SecurityFilter securityFilter = new SecurityFilter();
         securityFilter.setConfig(config);
         securityFilter.setClients(clientName);
         filters.put("securityFilter", securityFilter);
+       //cas 自定义资源认证拦截器--允许未登录返回，但是如果在其他项目中已经登录的（cookie中已经包含了tgc）又需要他能够显示用户信息
+        CustomCasFilter customCasFilter = new CustomCasFilter();
+        customCasFilter.setConfig(config);
+        customCasFilter.setClients(clientName);
+        filters.put("customCasFilter", customCasFilter);
         //cas 认证后回调拦截器
         CallbackFilter callbackFilter = new CustomCallbackFilter();
         callbackFilter.setConfig(config);
@@ -197,4 +203,13 @@ public class ShiroConfig {
         advisor.setSecurityManager(securityManager);
         return advisor;
     }
+    
+    @Bean
+    public FilterRegistrationBean casAssertionThreadLocalFilter() {
+        final FilterRegistrationBean assertionTLFilter = new FilterRegistrationBean();
+        assertionTLFilter.setFilter(new CustomAssertionThreadLocalFilter());
+        assertionTLFilter.setOrder(4);
+        return assertionTLFilter;
+    }
+
 }
