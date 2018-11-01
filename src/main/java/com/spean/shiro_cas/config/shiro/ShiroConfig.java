@@ -148,6 +148,8 @@ public class ShiroConfig {
         logoutFilter.setConfig(config);
         logoutFilter.setCentralLogout(true);
         logoutFilter.setLocalLogout(true);
+        //添加logout后  跳转到指定url  url的匹配规则  默认为 /.*;  
+        logoutFilter.setLogoutUrlPattern(".*");
         logoutFilter.setDefaultUrl(projectUrl + "/callback?client_name=" + clientName);
         filters.put("logout",logoutFilter);
         shiroFilterFactoryBean.setFilters(filters);
@@ -192,8 +194,6 @@ public class ShiroConfig {
     @DependsOn("lifecycleBeanPostProcessor")
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        // 强制使用cglib，防止重复代理和可能引起代理出错的问题
-        // https://zhuanlan.zhihu.com/p/29161098
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
         return defaultAdvisorAutoProxyCreator;
     }

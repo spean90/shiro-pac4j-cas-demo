@@ -12,7 +12,7 @@ import javax.servlet.ServletResponse;
 /**
  * sso登录回调 返回st,单点登录也会post到这个地址，
  * 验证st后跳转
- * http://demo.foxitreader.cn/callback?client_name=demoClient&ticket=ST-54-AKN6qLpOlwlMgjtP22Yf-sso.foxitreader.cn
+ * http://localhost:8081/callback?client_name=demoClient&ticket=ST-54-AKN6qLpOlwlMgjtP22Yf-sso.foxitreader.cn
  * @author ssss
  *
  */

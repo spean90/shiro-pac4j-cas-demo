@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.J2EContext;

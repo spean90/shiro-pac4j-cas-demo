@@ -47,7 +47,6 @@ public class CasRealm extends Pac4jRealm {
 		final List<CommonProfile> commonProfileList = pac4jToken.getProfiles();
 		final CommonProfile commonProfile = commonProfileList.get(0);
 		logger.info("单点登录返回的信息" + commonProfile.toString());
-		// todo
 		final Pac4jPrincipal principal = new Pac4jPrincipal(commonProfileList,
 				getPrincipalNameAttribute());
 		final PrincipalCollection principalCollection = new SimplePrincipalCollection(
