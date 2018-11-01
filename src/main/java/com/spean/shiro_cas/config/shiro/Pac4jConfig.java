@@ -30,7 +30,7 @@ public class Pac4jConfig {
      * @param shiroSessionStore
      * @return
      */
-    @Bean("authcConfig")
+    @Bean()
     public Config config(CasClient casClient, CustomShiroSessionStore shiroSessionStore) {
         Config config = new Config(casClient);
         config.setSessionStore(shiroSessionStore);

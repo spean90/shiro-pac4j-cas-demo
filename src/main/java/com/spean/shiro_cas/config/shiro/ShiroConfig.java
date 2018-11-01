@@ -7,7 +7,10 @@ import io.buji.pac4j.subject.Pac4jSubjectFactory;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
@@ -28,6 +31,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.Ordered;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 @Configuration
@@ -106,6 +110,8 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
     }
 
+    
+    
 
     /**
      * shiroFilter
@@ -205,10 +211,21 @@ public class ShiroConfig {
     }
     
     @Bean
-    public FilterRegistrationBean casAssertionThreadLocalFilter() {
-        final FilterRegistrationBean assertionTLFilter = new FilterRegistrationBean();
-        assertionTLFilter.setFilter(new CustomAssertionThreadLocalFilter());
-        assertionTLFilter.setOrder(4);
+    public FilterRegistrationBean<CustomContextThreadLocalFilter> casAssertionThreadLocalFilter(ShiroFilterFactoryBean shiroFilterFactoryBean) {
+    	/**
+    	 * 所有经过身份过滤拦截的请求、都需要经过CustomAssertionThreadLocalFilter 这个过滤器、
+    	 */
+    	Map<String, String> filterChainDefinitionMap = shiroFilterFactoryBean.getFilterChainDefinitionMap();
+    	List<String> casUrls = new LinkedList<String>();
+    	for (Entry<String, String> entry : filterChainDefinitionMap.entrySet()) {
+			if("securityFilter".equals(entry.getValue())||"customCasFilter".equals(entry.getValue())){
+				casUrls.add(entry.getKey());
+			}
+		}
+        final FilterRegistrationBean<CustomContextThreadLocalFilter> assertionTLFilter = new FilterRegistrationBean<CustomContextThreadLocalFilter>();
+        assertionTLFilter.setFilter(new CustomContextThreadLocalFilter());
+        assertionTLFilter.setOrder(Ordered.LOWEST_PRECEDENCE);
+        assertionTLFilter.setUrlPatterns(casUrls);
         return assertionTLFilter;
     }
 
